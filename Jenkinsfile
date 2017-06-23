@@ -11,13 +11,13 @@ pipeline {
                 echo 'test steps go here'
             }
         }
-        stage('deploy') {
+        stage('Deploy') {
             when { branch 'master' }
             steps {
                 echo 'deploy steps go here'
             }
         }
-        stage('smoke tests') {
+        stage('Smoke Tests') {
             when { branch 'master' }
             steps {
                 echo 'smoke test steps go here'
