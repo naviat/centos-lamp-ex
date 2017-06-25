@@ -1,4 +1,4 @@
-FROM centos:6.4
+FROM centos
 MAINTAINER Hai Dam <haidv6773@co-well.com.vn>
 
 # install http
