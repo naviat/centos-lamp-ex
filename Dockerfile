@@ -11,7 +11,7 @@ RUN yum -y install httpd vim-enhanced bash-completion unzip
 RUN yum install -y mariadb mariadb-server
 RUN echo "NETWORKING=yes" > /etc/sysconfig/network
 # start mysqld to create initial tables
-RUN service mysqld start
+RUN service mysql start
 
 # install php
 RUN yum install -y php php-mysql php-devel php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml
