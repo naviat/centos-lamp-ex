@@ -6,15 +6,13 @@ RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noar
 
 # install httpd
 RUN yum -y install httpd vim-enhanced bash-completion unzip
-RUN systemctl enable httpd.service
-RUN systemctl start httpd.service
+RUN service httpd start
 
 # install mysql
 RUN yum install -y mariadb mariadb-server
 RUN echo "NETWORKING=yes" > /etc/sysconfig/network
 # start mysqld to create initial tables
-RUN systemctl enable mariadb.service
-RUN systemctl start mariadb.service
+RUN service mariadb start
 
 # install php
 RUN yum install -y php php-mysql php-devel php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml
