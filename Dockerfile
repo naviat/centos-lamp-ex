@@ -6,7 +6,7 @@ RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noar
 
 # install httpd
 RUN yum -y install httpd vim-enhanced bash-completion unzip
-RUN service httpd start
+RUN apachectl httpd start
 
 # install mysql
 RUN yum install -y mariadb mariadb-server
