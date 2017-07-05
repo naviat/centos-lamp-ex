@@ -33,4 +33,8 @@ node {
             app.push("latest")
         }
     }
+    stage('Remove image') {
+        sh 'docker rmi -f 657536823989.dkr.ecr.us-west-2.amazonaws.com/docker-images'
+        sh 'docker rmi -f docker-images'
+    }
 }
