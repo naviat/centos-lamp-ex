@@ -1,34 +1,47 @@
-FROM centos
-MAINTAINER Hai Dam <haidv6773@co-well.com.vn>
+FROM debian:wheezy
 
-# install http
-RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+MAINTAINER Hai Dam <haidv.ict@gmail.com>
 
-# install httpd
-RUN yum -y install httpd vim-enhanced bash-completion unzip
-RUN sudo systemctl start httpd.service
+ENV DEBIAN_FRONTEND noninteractive
 
-# install mysql
-RUN yum install -y mariadb mariadb-server
-RUN echo "NETWORKING=yes" > /etc/sysconfig/network
-# start mysqld to create initial tables
-RUN sudo systemctl start mariadb
-RUN sudo systemctl enable mariadb.service
+# Need wget, update and install
+RUN apt-get update && apt-get install wget -y
 
-# install php
-RUN yum install -y php php-mysql php-devel php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml
-RUN sudo systemctl restart httpd.service
-# install supervisord
-RUN yum install -y python-pip && pip install "pip>=1.4,<1.5" --upgrade
-RUN pip install supervisor
+# Adding Dotdeb for PHP 5.4 and desired PHP version
+RUN echo 'deb http://packages.dotdeb.org wheezy all' >> /etc/apt/sources.list  && echo 'deb-src http://packages.dotdeb.org wheezy all' >> /etc/apt/sources.list
 
-# install sshd
-RUN yum install -y openssh-server openssh-clients passwd
+# Dotdeb requires apt key, get it and add
+RUN wget http://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
 
-RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key 
-RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && echo 'root:changeme' | chpasswd
+# Update repositories once again to have access to dotdeb
+RUN apt-get update
 
-ADD phpinfo.php /var/www/html/
-ADD supervisord.conf /etc/
-EXPOSE 22 80
-CMD ["supervisord", "-n"]
+RUN apt-get install -yq \
+        apache2  \
+        php5  \ 
+        php5-apc  \
+        php5-cli  \ 
+        php5-curl \ 
+        php5-gd \ 
+        php5-intl \
+        php5-mcrypt \ 
+        php5-mysql \ 
+        php5-xdebug \
+        libapache2-mod-php5 \
+        mysql-server
+
+# Expose sites folder for mounting
+VOLUME ["/sites"]
+
+# Adding necessary files
+ADD run.sh /run.sh
+RUN chmod +x run.sh
+
+COPY etc/apache2/apache2.conf /etc/apache2/apache2.conf
+COPY etc/php5/apache2/php.ini /etc/php5/apache2/php.ini
+COPY etc/php5/conf.d/20-apc.ini /etc/php5/conf.d/20-apc.ini
+COPY etc/php5/conf.d/20-xdebug.ini /etc/php5/conf.d/20-xdebug.ini
+
+EXPOSE 80
+
+CMD ["/run.sh"]
