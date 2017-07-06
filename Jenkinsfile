@@ -6,14 +6,14 @@ node {
 
         checkout scm
     }
-    stage("composer_install") {
+    /*stage("composer_install") {
         // Run `composer update` as a shell script
         sh 'composer install'
     }
     stage("phpunit") {
         // Run PHPUnit
         sh 'vendor/bin/phpunit'
-    }
+    } */
     stage('Build image') {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
