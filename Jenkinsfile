@@ -19,7 +19,7 @@ node {
          * docker build on the command line */
 
         /*app = docker.build("docker-images")*/
-        sh 'sudo docker build -t docker-images'
+        sh 'sudo docker build -t jenkins-test'
     }
 
     stage('Test image') {
